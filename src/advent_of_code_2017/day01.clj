@@ -1,15 +1,24 @@
 (ns advent-of-code-2017.day01
   (:require [clojure.java.io :as io]))
 
-(defn captcha-solver [s]
-  (let [cycled (str s (subs s 0 1))
-        only-same (filter #(apply = %) (partition 2 1 cycled))]
-    (reduce (fn [acc [c _]]
-              (+ acc (Character/getNumericValue c))) 0 only-same)))
+(defn parse-digit [c]
+  (Character/getNumericValue c))
+
+(defn captcha-solver
+  ([s] (captcha-solver s 1))
+  ([s step]
+   (let [cycled (cycle s)]
+     (reduce (fn [acc [i current]]
+               (let [next (nth cycled (+ i step))]
+                 (if (= next current)
+                   (+ acc (Character/getNumericValue current))
+                   acc))) 0 (keep-indexed vector s)))))
 
 (comment
-
   (let [input (clojure.string/trim-newline
                (slurp (io/resource "day01/input.txt")))]
-    (captcha-solver input))
+    ;; First star
+    (captcha-solver input)
+    ;; Second star
+    (captcha-solver input (quot (count input) 2)))
   )

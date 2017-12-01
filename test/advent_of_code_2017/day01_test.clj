@@ -17,3 +17,9 @@
   (is (= (captcha-solver "1234") 0))
   (is (= (captcha-solver "91212129") 9)))
 
+(deftest captcha-solver-extra-star-given-examples
+  (is (= (captcha-solver "1212" 2) 6))
+  (is (= (captcha-solver "1221" 2) 0))
+  (is (= (captcha-solver "123425" 3) 4))
+  (is (= (captcha-solver "123123" 3) 12))
+  (is (= (captcha-solver "12131415" 4) 4)))
