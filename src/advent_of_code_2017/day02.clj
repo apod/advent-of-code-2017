@@ -10,11 +10,20 @@
 (defn row-difference [row]
   (reduce - (apply (juxt max min) row)))
 
-(defn checksum [rows]
-  (reduce + (map row-difference rows)))
+(defn row-division [row]
+  (let [divisible (for [a row b row
+                        :when (and (not= a b) (= (mod a b) 0))]
+                    [a b])]
+    (apply quot (first divisible))))
+
+(defn checksum [rows f]
+  (reduce + (map f rows)))
 
 (comment
   (let [spreadsheet (parse-input (slurp (io/resource "day02/input.txt")))]
-    (checksum spreadsheet))
+    ;; First star
+    (checksum spreadsheet row-difference)
+    ;; Second star
+    (checksum spreadsheet row-division))
   )
 
