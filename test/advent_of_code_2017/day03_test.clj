@@ -1,6 +1,7 @@
 (ns advent-of-code-2017.day03-test
   (:require [advent-of-code-2017.day03 :refer [walk-to spiral-walker
-                                               move turn distance-from]]
+                                               move turn distance-from
+                                               neighbors walk-summing-neighbors-until]]
             [clojure.test :refer :all]))
 
 (deftest move-test
@@ -40,3 +41,17 @@
   (is (= (distance-from 23) 2))
   (is (= (distance-from 1024) 31)))
 
+(deftest neighbors-test
+  (is (= (neighbors [0 0]) [[-1  1] [0  1] [ 1  1]
+                            [-1  0]        [ 1  0]
+                            [-1 -1] [0 -1] [ 1 -1]]))
+  (is (= (neighbors [3 3]) [[2 4] [3 4] [4 4]
+                            [2 3]       [4 3]
+                            [2 2] [3 2] [4 2]])))
+
+(deftest walk-summing-neighbors-until-test
+  (is (= (walk-summing-neighbors-until (spiral-walker) 1 #(> % 5)) 10))
+  (is (= (walk-summing-neighbors-until (spiral-walker) 1 #(> % 26)) 54))
+  (is (= (walk-summing-neighbors-until (spiral-walker) 1 #(> % 133)) 142))
+  (is (= (walk-summing-neighbors-until (spiral-walker) 1 #(> % 362)) 747))
+  (is (= (walk-summing-neighbors-until (spiral-walker) 1 #(> % 747)) 806)))
