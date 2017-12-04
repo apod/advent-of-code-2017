@@ -6,9 +6,14 @@
   (every? #(= (val %) 1)
           (frequencies (str/split passphrase #"\s+"))))
 
+(defn valid-passphrase-no-anagrams? [passphrase]
+  (every? #(= (val %) 1)
+          (frequencies (map frequencies (str/split passphrase #"\s+")))))
+
 (comment
   (let [input (str/split-lines (slurp (io/resource "day04/input.txt")))]
     ;; First star
     (count (filter true? (map valid-passphrase? input)))
-    )
+    ;; Second star
+    (count (filter true? (map valid-passphrase-no-anagrams? input))))
   )
