@@ -65,7 +65,7 @@
 (defn walk-summing-neighbors-until [walker from-n pred]
   (loop [{:keys [position] :as walker} walker
          n from-n
-         filled {[0 0] 1}]
+         filled {[0 0] from-n}]
     (if (pred n)
       n
       (let [next-walker ((action-by-position position) walker)
