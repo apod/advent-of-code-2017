@@ -1,24 +1,33 @@
 (ns advent-of-code-2017.day07-test
-  (:require [advent-of-code-2017.day07 :refer [bottom-program parse-node]]
+  (:require [advent-of-code-2017.day07
+             :refer
+             [parse-program root-program weakest-link]]
             [clojure.test :refer :all]))
 
-(deftest parse-node-test
-  (is (= (parse-node "pbga (66)")
+(def example-programs [{:name "pbga" :weight 66}
+                       {:name "xhth" :weight 57}
+                       {:name "ebii" :weight 61}
+                       {:name "havc" :weight 66}
+                       {:name "ktlj" :weight 57}
+                       {:name "fwft" :weight 72 :children ["ktlj" "cntj" "xhth"]}
+                       {:name "qoyq" :weight 66}
+                       {:name "padx" :weight 45 :children ["pbga" "havc" "qoyq"]}
+                       {:name "tknk" :weight 41 :children ["ugml" "padx" "fwft"]}
+                       {:name "jptl" :weight 61}
+                       {:name "ugml" :weight 68 :children ["gyxo" "ebii" "jptl"]}
+                       {:name "gyxo" :weight 61}
+                       {:name "cntj" :weight 57}])
+
+(deftest parse-program-test
+  (is (= (parse-program "pbga (66)")
          {:name "pbga" :weight 66}))
-  (is (= (parse-node "fwft (72) -> ktlj, cntj, xhth")
+  (is (= (parse-program "fwft (72) -> ktlj, cntj, xhth")
          {:name "fwft" :weight 72 :children ["ktlj" "cntj" "xhth"]})))
 
-(deftest bottom-program-given-examples
-  (is (= (bottom-program ["pbga (66)"
-                          "xhth (57)"
-                          "ebii (61)"
-                          "havc (66)"
-                          "ktlj (57)"
-                          "fwft (72) -> ktlj, cntj, xhth"
-                          "qoyq (66)"
-                          "padx (45) -> pbga, havc, qoyq"
-                          "tknk (41) -> ugml, padx, fwft"
-                          "jptl (61)"
-                          "ugml (68) -> gyxo, ebii, jptl"
-                          "gyxo (61)"
-                          "cntj (57)"]) "tknk")))
+(deftest root-program-given-examples
+  (is (= (root-program example-programs)
+         {:name "tknk" :weight 41 :children ["ugml" "padx" "fwft"]})))
+
+(deftest weakest-link-given-examples
+  (is (= (:new-weight (weakest-link example-programs))
+         60)))
