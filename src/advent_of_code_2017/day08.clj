@@ -17,21 +17,30 @@
     (get env var-or-num 0)
     var-or-num))
 
+(defn evaluate-reducer [env {:keys [register f pred f-args pred-args]}]
+  (let [pred-args (map (partial lookup env) pred-args)]
+    (if (apply pred pred-args)
+      (update env register (fnil f 0))
+      env)))
+
 (defn evaluate [instructions]
-  (reduce (fn [env {:keys [register f pred f-args pred-args]}]
-            (let [pred-args (map (partial lookup env) pred-args)]
-              (if (apply pred pred-args)
-                (update env register (fnil f 0))
-                env)))
-          {} instructions))
+  (reduce evaluate-reducer {} instructions))
+
+(defn evaluate-history [instructions]
+  (reductions evaluate-reducer {} instructions))
 
 (defn max-register-value [instructions]
   (apply max (vals (evaluate instructions))))
+
+(defn max-register-value-ever [instructions]
+  (apply max (mapcat vals (evaluate-history instructions))))
 
 (comment
   (let [input (str/split-lines
                (slurp (clojure.java.io/resource "day08/input.txt")))
         instructions (map parse-instruction input)]
     ;; First star
-    (max-register-value instructions))
+    (max-register-value instructions)
+    ;; Second star
+    (max-register-value-ever instructions))
   )
