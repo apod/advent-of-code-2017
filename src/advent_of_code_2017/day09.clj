@@ -8,7 +8,7 @@
                 (case c
                   \> #(group remaining state)
                   \! #(cancel remaining state)
-                  #(garbage remaining state))))
+                  #(garbage remaining (update state :garbage inc)))))
           (group [[c & remaining] state]
             (if (nil? c) state
                 (case c
@@ -19,11 +19,13 @@
                                            (update :level dec)))
                   \< #(garbage remaining state)
                   [:unhandled c state])))]
-    (trampoline group input {:level 0 :score 0})))
+    (trampoline group input {:level 0 :score 0 :garbage 0})))
 
 (comment
   (let [input (str/trim (slurp (clojure.java.io/resource "day09/input.txt")))]
     ;; First star
-    (parse-stream input))
+    (:score (parse-stream input))
+    ;; Second star
+    (:garbage (parse-stream input)))
   )
 

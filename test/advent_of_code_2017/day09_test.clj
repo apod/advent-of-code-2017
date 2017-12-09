@@ -12,5 +12,14 @@
   (is (= (:score (parse-stream "{{<!!>},{<!!>},{<!!>},{<!!>}}")) 9))
   (is (= (:score (parse-stream "{{<a!>},{<a!>},{<a!>},{<ab>}}")) 3)))
 
+(deftest parse-stream-garbage-count-given-examples
+  (is (= (:garbage (parse-stream "<>")) 0))
+  (is (= (:garbage (parse-stream "<random characters>")) 17))
+  (is (= (:garbage (parse-stream "<<<<>")) 3))
+  (is (= (:garbage (parse-stream "<{!>}>")) 2))
+  (is (= (:garbage (parse-stream "<!!>")) 0))
+  (is (= (:garbage (parse-stream "<!!!>>")) 0))
+  (is (= (:garbage (parse-stream "<{o\"i!a,<{i<a>")) 10)))
+
 
 
