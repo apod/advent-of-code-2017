@@ -17,9 +17,7 @@
          round rounds]
     (cond
       (zero? round) coll
-      (nil? length) (do
-                      (println (dec round))
-                      (recur coll lengths pos skip (dec round)))
+      (nil? length) (recur coll lengths pos skip (dec round))
       :else (recur (reverse-portion coll pos length) remaining
                    (+ pos length skip) (inc skip) round))))
 
