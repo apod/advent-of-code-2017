@@ -19,7 +19,7 @@
       (zero? round) coll
       (nil? length) (recur coll lengths pos skip (dec round))
       :else (recur (reverse-portion coll pos length) remaining
-                   (+ pos length skip) (inc skip) round))))
+                   (mod (+ pos length skip) (count coll)) (inc skip) round))))
 
 (defn sparse-hash [input]
   (let [rounds 64
