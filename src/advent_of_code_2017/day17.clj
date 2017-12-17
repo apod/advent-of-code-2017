@@ -17,10 +17,10 @@
          pos 0 i 1]
     (if (> i iterations)
       last-insert
-      (recur (if (= (inc (rem (+ pos steps) i)) index-of-interest)
-               i last-insert)
-             (inc (rem (+ pos steps) i))
-             (inc i)))))
+      (let [new-pos (inc (rem (+ pos steps) i))]
+        (recur (if (= new-pos index-of-interest) i last-insert)
+               new-pos
+               (inc i))))))
 
 (comment
   ;; First star
