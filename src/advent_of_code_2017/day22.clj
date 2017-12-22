@@ -30,6 +30,13 @@
     :down :left
     :left :up))
 
+(defn flip [dir]
+  (case dir
+    :up :down
+    :right :left
+    :down :up
+    :left :right))
+
 (defn move [[x y] dir]
   (case dir
     :up    [x (inc y)]
@@ -37,23 +44,36 @@
     :left  [(dec x) y]
     :right [(inc x) y]))
 
-(defn infect [m bursts]
+(defn basic-rules [state dir]
+  (case state
+    \. [\# (turn-left dir)]
+    \# [\. (turn-right dir)]))
+
+(defn evolved-rules [state dir]
+  (case state
+    \. [\w (turn-left dir)]
+    \w [\# dir]
+    \# [\f (turn-right dir)]
+    \f [\. (flip dir)]))
+
+(defn infect [m bursts rules-fn]
   (loop [m m dir :up
          pos [0 0] infections 0
          burst bursts]
     (let [current (get m pos \.)
-          clean? (= current \.)
-          new-dir ((if clean? turn-left turn-right) dir)]
+          [new-state new-dir] (rules-fn current dir)]
       (if (zero? burst)
         infections
-        (recur (update m pos (constantly (if clean? \# \.)))
+        (recur (assoc m pos new-state)
                new-dir
                (move pos new-dir)
-               (if clean? (inc infections) infections)
+               (if (= new-state \#) (inc infections) infections)
                (dec burst))))))
 
 (comment
   (let [input (slurp (io/resource "day22/input.txt"))]
     ;; First star
-    (infect (parse-map input) 10000))
+    (infect (parse-map input) 10e3 basic-rules)
+    ;; Second star
+    (infect (parse-map input) 10e6 evolved-rules))
   )
